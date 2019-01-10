@@ -1,0 +1,11 @@
+[Unit]
+Descripton=Restoring iptables
+
+[Service]
+ExecStart=/etc/systemd/firewall.sh
+
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
