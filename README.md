@@ -89,11 +89,18 @@
     ```
 
 1. **WAIT** for pods to deploy on primary node (`master`)
-This creates the network overlay
+**CHOOSE ONE**
+* This creates the calico network overlay
     ```bash
-    kubectl apply -f setup/kubernetes/networking/rbac-kdd.yaml
-    kubectl apply -f setup/kubernetes/networking/calico.yaml
+    kubectl apply -f setup/kubernetes/networking/calico/rbac-kdd.yaml
+    kubectl apply -f setup/kubernetes/networking/calico/calico.yaml
     ```
+* This creates the flannel network overlay - *if u wanna run metallb on premise this is your choice*
+    Set /proc/sys/net/bridge/bridge-nf-call-iptables to 1 by running sysctl net.bridge.bridge-nf-call-iptables=1 to pass bridged
+    ```bash
+    kubectl apply -f setup/kubernetes/networking/flannel/kube-flannel.yaml
+    ```
+
 
 ##### Install helm
 
@@ -115,7 +122,7 @@ rm -rf ~/.helm/
 
 
 
-##### Install cert-manager
+##### Install cert-manager - *Note:* for this to work you need portmapping thru the router to the ports/adresses you are using.
 
 Prepare cert-manager install
 
@@ -134,6 +141,9 @@ Install cert-manager into your kubes cluster by running:
 ##### Install certissuer
 
 Run command for certissuer. `kubectl apply -f setup/kubernetes/certissuer.yaml`
+
+##### Instal Metall LB - *work in progress*
+See links in bottom section
 
 ##### Install ingress controller
 
@@ -164,16 +174,21 @@ http://ip:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard
 
 ###### URLs
 URLS to note:
-1. https://kubernetes.io/docs/concepts/
-1. https://kubernetes.io/docs/setup/independent/install-kubeadm/
-1. https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#tear-down
-1. https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/installation.md
-1. https://github.com/containous/traefik
-1. https://github.com/jcmoraisjr/haproxy-ingress
-1. https://blog.heptio.com/declarative-configuration-for-kubeadm-heptioprotip-7304eb32641
-1. https://netplan.io/examples
-1. https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
-1. https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
-1. https://kubernetes.io/blog/2015/10/some-things-you-didnt-know-about-kubectl_28/
-1. https://akomljen.com/kubernetes-nginx-ingress-controller/
-1. https://labs.play-with-k8s.com/
+* https://kubernetes.io/docs/concepts/
+* https://kubernetes.io/docs/setup/independent/install-kubeadm/
+* https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#tear-down
+* https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/installation.md
+* https://github.com/containous/traefik
+* https://github.com/jcmoraisjr/haproxy-ingress
+* https://blog.heptio.com/declarative-configuration-for-kubeadm-heptioprotip-7304eb32641
+* https://netplan.io/examples
+* https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
+* https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
+* https://kubernetes.io/blog/2015/10/some-things-you-didnt-know-about-kubectl_28/
+* https://akomljen.com/kubernetes-nginx-ingress-controller/
+* https://labs.play-with-k8s.com/
+
+###### Metall LB
+* https://metallb.universe.tf/
+* https://medium.com/@zhimin.wen/enable-loadbalancer-type-of-service-exposure-for-on-premise-kubernetes-c44471a99879
+* https://kubernetes.github.io/ingress-nginx/deploy/baremetal/
