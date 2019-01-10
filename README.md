@@ -91,13 +91,9 @@
 1. **WAIT** for pods to deploy on primary node (`master`)
 This creates the network overlay
     ```bash
-    kubectl apply -f rbac-kdd.yaml
-    kubectl apply -f calico.yaml
+    kubectl apply -f setup/kubernetes/networking/rbac-kdd.yaml
+    kubectl apply -f setup/kubernetes/networking/calico.yaml
     ```
-
-And now deploy the sample pod and nodeport service:
-`kubectl apply -f nginx-service.yaml`
-
 
 ##### Install helm
 
@@ -105,7 +101,7 @@ Command: `snap install helm --classic`
 
 Helm needs a custom user in kubeadm environment and a RBAC rules for clusterroles.
 *Note: this creates a service account for helm in the kube-system space.*
-`kubectl apply -f helm.yaml`
+`kubectl apply -f setup/kubernetes/helm-service.yaml`
 
 Now create the necessary helm client and tiller service.
 Command: `helm init --service-account helm`
@@ -135,7 +131,26 @@ Install cert-manager into your kubes cluster by running:
 
 *Note:* This requires your cluster to have RBAC enabled.
 
+##### Install certissuer
 
+Run command for certissuer. `kubectl apply -f setup/kubernetes/certissuer.yaml`
+
+##### Install ingress controller
+
+Run commands:
+```bash
+git clone https://github.com/nginxinc/kubernetes-ingress/
+git checkout v1.4.3
+cd kubernetes-ingress/deployments/helm-chart
+```
+To actually install the ingress controller run command: `helm install --name nginx-ingress .`
+
+Apply the "on premise" patch for an ingress controller, which is exposing the controller thru a nodeport.
+command: `kubectl apply -f setup/kubernetes/ingress-nodeport.yaml`
+
+##### Install your service for testing
+
+And now deploy the sample pod and nodeport service: `kubectl apply -f pods/nginx-service.yaml`
 
 ##### Install kubernetes dashboard - *work in progress*
 

@@ -1,14 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ing-nginx
+  labels:
+    ing: ing-nginx
+# annotations:
+#    certmanager.k8s.io/cluster-issuer: scriptninjas-dev
+spec:
+  rules:
+  - host: cluster.scriptninjas.se
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: svc-nginx
+          servicePort: 80
+  # tls:
+  #   - hosts:
+  #     - cluster.scriptninjas.se
+  #     secretName: scriptninjas-dev
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-nginx-port
+  name: svc-nginx
   labels:
-    svc: app-nginx-port
+    svc: svc-nginx
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-  - port: 8080
-    targetPort: 80
+  - port: 80
     protocol: TCP
     name: http
   selector:
